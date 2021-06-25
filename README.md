@@ -1,7 +1,7 @@
 # discord-workflow
 # ghostmirror-workflow
 
-You can use [this repo](https://github.com/flashokiller/discord-modrate-bot) as a template
+You can use [this repo](https://github.com/flashokiller/discord-modrate-bot-repo) as a template
 
 First setup everything then push to your private Repository
 
