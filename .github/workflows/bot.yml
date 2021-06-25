@@ -10,7 +10,7 @@ env:
   # Change these values if you have forked it for your own works
   GitHubMail: "flashokiller.com"
   GitHubName: "flashokiller" 
-  Branch: "master"
+  Branch: "main"
 
 jobs:
   build:
