@@ -1,0 +1,58 @@
+name: bot by flasho
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore: 'README.md'
+  workflow_dispatch:
+   
+env:
+  # Change these values if you have forked it for your own works
+  GitHubMail: "flashokiller.com"
+  GitHubName: "flashokiller" 
+  Branch: "master"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Set Git Configs & Secrets
+        run: |
+          git config --global user.email ${GitHubMail}
+          git config --global user.name ${GitHubName}
+          git config --global credential.helper store
+          echo "https://${GitHubName}:${{ secrets.GH_TOKEN }}@github.com" > ~/.git-credentials
+
+      # Cleanup The Actions Workspace Using Custom Composite Run Actions
+      - uses: rokibhasansagar/slimhub_actions@main
+
+      - name: Clone The Secret Mirror Repository
+        run: |
+          git clone https://${GitHubName}:${{ secrets.GH_TOKEN }}@github.com/${{ secrets.MIRROR_REPOSLUG }} -b ${Branch} source
+
+      - name: Compile The moderator bot
+        run: |
+          cd source || exit 1
+          curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+          sudo apt-get -qq -y install nodejs rclone
+          npm i
+
+      - name: running moderator bot
+        timeout-minutes: 340
+        continue-on-error: true
+        run: |
+            node index.js
+      - name: Loop Workflow
+        continue-on-error: true
+        run: |
+          # ${GITHUB_REPOSITORY} is the repo slug which runs this script
+          git clone https://${{ secrets.GH_TOKEN }}@github.com/${GITHUB_REPOSITORY} loop
+          cd loop || exit 1
+          echo $(( RANDOM - ( RANDOM % RANDOM ) )) > looper.txt
+          git add looper.txt
+          git commit -m "Workflow : Loop"
+          git push -q https://${{ secrets.GH_TOKEN }}@github.com/${GITHUB_REPOSITORY} HEAD:main
